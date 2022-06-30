@@ -15,7 +15,7 @@ Because I don't like to use functions like `strtok` or `strsep`.
 
 ```sh
 $ mkdir bin obj tests/bin
-$ make && ./SPLIT_STRING
+$ make && ./bin/SPLIT_STRING
 ```
 
 
