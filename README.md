@@ -12,12 +12,9 @@ Because I don't like to use functions like `strtok` or `strsep`.
 # Compile and run example `main.c`
 
 
-See `Makefile`. C11 standard used.
-
-To compile and run `main.c` example:
-
 
 ```sh
+$ mkdir bin obj tests/bin
 $ make && ./SPLIT_STRING
 ```
 
