@@ -76,7 +76,7 @@ char **new_split(const char *str, const char sep) {
   uint16_t *indexes = sep_indexes(str, sep);
   uint16_t *lengths = tokens_lengths(str, sep);
                                                  
-  char **split = malloc(tok_nb * sizeof(char*));
+  char **split = malloc((tok_nb + 1) * sizeof(char*));
   if (split == NULL)
     err_exit("failed to malloc char** csv line");
 
@@ -94,22 +94,28 @@ char **new_split(const char *str, const char sep) {
     }
     split[i][lengths[i]] = '\0';
   }
+  split[tok_nb] = NULL;
   free(lengths);
   free(indexes);
   
   return split;
 }
 
-void free_split(char **split, uint16_t tok_nb) {
+void free_split(char **split) {
   /* Free memory allocated by `split_csv_line` function */
-  for (uint16_t i = 0; i < tok_nb; ++i)
+  uint16_t i = 0;
+  while (split[i] != NULL) {
     free(split[i]);
+    i++;
+  }
   free(split);
 }
 
 
-void log_split(FILE *stream, char **split, uint16_t tok_nb) {
-  for (uint16_t i = 0; i < tok_nb; ++i) {
+void log_split(FILE *stream, char **split) {
+  uint16_t i = 0;
+  while (split[i] != NULL) {
     fprintf(stream, "[%d] '%s'\n", i, split[i]);
+    i++;
   }
 }
