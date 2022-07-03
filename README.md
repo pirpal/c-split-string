@@ -5,11 +5,11 @@ C Split String
 Some C functions to split a string according to a given separator.
 
 	
-# Why?
+### Why?
 
 Because I don't like to use functions like `strtok` or `strsep`.
 
-# Compile and run example `main.c`
+### Compile and run example `main.c`
 
 
 
@@ -19,7 +19,7 @@ $ make && ./bin/SPLIT_STRING
 ```
 
 
-# Usage
+### Usage
 
 Put files `split_string.c` and `split_string.h` in your source files. Include
 it with:
@@ -70,7 +70,7 @@ Output:
 [4] 'pippin'
 ```
 
-# Empty fields
+### Empty fields
 
 Empty fields are returned as empty strings `""`:
 
@@ -97,7 +97,7 @@ Output:
 ```
 	
 	
-# If no separator is found
+### If no separator is found
 
 The program won't exit on error, but the split will be an array with
 an empty string as its unique element:
