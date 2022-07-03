@@ -1,13 +1,11 @@
 #include "split_string.h"
+#include "mydivutils.h"
+
+
 
 //----------------------------------------------------------------
 // § Static functions
 //----------------------------------------------------------------
-static void err_exit(const char *msg) {
-  /* Generic exit on failure function */
-  fprintf(stderr, "[ERR] %s\n", msg);
-  exit(EXIT_FAILURE);
-}
 
 static uint16_t count_sep(const char *str, const char sep) {
   /* Returns nb of SEP delimiters in STR */
@@ -24,7 +22,7 @@ static uint16_t *sep_indexes(const char *str, const char sep) {
   uint16_t sep_nb = count_sep(str, sep);
   uint16_t *indexes = malloc(sep_nb * sizeof(uint16_t));
   if (indexes == NULL)
-    err_exit("failed to malloc indexes[]");
+    err_exit("sep_indexes", "failed to malloc uint16_t*");
 
   uint16_t count = 0;
   for (uint16_t i = 0; i < strlen(str); ++i) {
@@ -43,7 +41,7 @@ static uint16_t *tokens_lengths(const char *str, const char sep) {
   uint16_t *indexes = sep_indexes(str, sep);
   uint16_t *lengths = malloc(tok_nb * sizeof(uint16_t));
   if (lengths == NULL)
-    err_exit("failed to malloc lengths[]");
+    err_exit("tokens_lengths", "failed to malloc uint16_t");
   for (uint16_t i = 0; i < tok_nb; ++i) {
     if (i == 0) {             // first token
       lengths[i] = indexes[i];
@@ -62,29 +60,34 @@ static uint16_t *tokens_lengths(const char *str, const char sep) {
 //----------------------------------------------------------------
 
 uint16_t tokens_nb(const char *str, const char sep) {
-  /* Returns number of tokens separated by SEP in STR */
+  /*
+    Returns number of tokens separated by SEP in struct 
+  */
   uint16_t sep_nb = count_sep(str, sep);
   return sep_nb + 1;
 }
 
 
 char **new_split(const char *str, const char sep) {
-  /* Returns array of STR's string tokens */
+  /*
+    Returns array of STR's string tokens
+  */
   uint16_t sep_nb = count_sep(str, sep);
   uint16_t tok_nb = sep_nb + 1;
                                                  
   uint16_t *indexes = sep_indexes(str, sep);
   uint16_t *lengths = tokens_lengths(str, sep);
-                                                 
-  char **split = malloc(tok_nb * sizeof(char*));
+
+  // malloc tok_nb + 1 for last NULL element
+  char **split = malloc((tok_nb + 1) * sizeof(char*));
   if (split == NULL)
-    err_exit("failed to malloc char** csv line");
+    err_exit("new_split", "failed to malloc char** csv line");
 
   for (uint16_t i = 0; i < tok_nb; ++i) {
     // malloc each string token with extra space for termination char '\0'
     split[i] = malloc((lengths[i] + 1) * sizeof(char));
     if (split[i] == NULL)
-      err_exit("failed to malloc token char[]");
+      err_exit("new_split", "failed to malloc token char[]");
 
     uint16_t start = i == 0 ? 0 : indexes[i - 1] + 1;
     if (lengths[i] == 0) {
@@ -94,22 +97,30 @@ char **new_split(const char *str, const char sep) {
     }
     split[i][lengths[i]] = '\0';
   }
+  split[tok_nb] = NULL;
   free(lengths);
   free(indexes);
   
   return split;
 }
 
-void free_split(char **split, uint16_t tok_nb) {
-  /* Free memory allocated by `split_csv_line` function */
-  for (uint16_t i = 0; i < tok_nb; ++i)
+void free_split(char **split) {
+  /*
+    Free memory allocated by `split_string` functions
+  */
+  uint16_t i = 0;
+  while (split[i] != NULL) {
     free(split[i]);
+    i++;
+  }
   free(split);
 }
 
 
-void log_split(FILE *stream, char **split, uint16_t tok_nb) {
-  for (uint16_t i = 0; i < tok_nb; ++i) {
+void log_split(FILE *stream, char **split) {
+  uint16_t i = 0;
+  while (split[i] != NULL) {
     fprintf(stream, "[%d] '%s'\n", i, split[i]);
+    i++;
   }
 }
