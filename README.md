@@ -28,8 +28,6 @@ it with:
 #include "split_string.h"
 ```
 
-- `tokens_nb`:  gives you the number of tokens in a string
-
 - `new_split`:  returns an array of strings made of string's tokens.
 
 - `free_split`:  must be called for each split created with `new_split`
@@ -37,21 +35,7 @@ it with:
 - `log_split`:  print to stdout (or a log file) your brand new split
 
 
-The number of tokens is required by  `free_split` and `log_split`
-
-
-```c
-uint16_t tok_nb = tokens_nb(str, sep);
-```
-
-If you work on a CSV file, this number should be the same for all lines, so you
-have to call the function only once, for example on the first line of the file.
-But `tokens_nb` can also be used in a function where you verify that your CSV
-file is well written before you use it ; it should have consistent lines with
-the same amount of tokens/separators. It's probably worth checking that before
-looping through the file's lines.
-
-> the number of tokens in a string is always (nb of separators + 1)
+> the number of tokens in a string is always: nb of separators + 1
 
 
 ```c
@@ -63,17 +47,14 @@ looping through the file's lines.
 
 int main (void)
 {
-	// Get numbers of tokens in the string:
-	int tok_nb = tokens_nb(HOBBITS, SEP);
-	
 	// Get tokens as array of strings:
 	char **split = new_split(HOBBITS, SEP);
 	
 	// Print tokens:
-	log_split(stdout, split, tok_nb);
+	log_split(stdout, split);
 	
 	// Free memory allocated by new_split:
-	free_split(split, tok_nb);
+	free_split(split);
 	
 	return EXIT_SUCCESS;
 }
@@ -96,10 +77,8 @@ Empty fields are returned as empty strings `""`:
 ```c
 const char *CSV_LINE = ";a;csv;line;;with;empty;fields;;"
 
-int tok_nb = tokens_nb(CSV_LINE, ';');
-
 char **split = new_split(CSV_LINE, ';');
-log_split(stdout, tok_nb);
+log_split(stdout);
 ```
 
 Output:
@@ -131,11 +110,4 @@ char **split = new_split(str, ':');
                                                                     
 // split => [""]
 ```
-                                                                    
-So it's better to check tokens number before calling `new_split`:
 
-```c
-if (tokens_nb(str, sep) == 0) {
-	// do something else...
-}
-```
