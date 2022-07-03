@@ -16,7 +16,7 @@ Test(tests_split_string, test_splits) {
   char **split = new_split(str, ' ');
   cr_expect(strcmp(split[0], "foo") == 0);
   cr_expect(strcmp(split[1], "bar") == 0);
-  free_split(split);
+  free_split(split, tokens_nb(str, ' '));
 }
 
 
@@ -25,5 +25,5 @@ Test(tests_split_string, test_empty_fields) {
   char **split = new_split(str, ',');
   cr_expect(strcmp(split[0], "") == 0);
   cr_expect(strcmp(split[4], "") == 0);
-  free_split(split);
+  free_split(split, tokens_nb(str, ','));
 }
